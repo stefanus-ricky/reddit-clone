@@ -1,13 +1,139 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+/*  
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+
+*/
+body {
+  margin: 0;
+  font-family: IBMPlexSans, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #7dbcff99;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+
+.flex-zero{
+  flex: 0 0;
+}
+/**
+
+
+ Nav
+
+
+**/
+.header{
+  margin-bottom: 150px;
+}
+.search-bar-container{
+  display:flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+.search-form{
+  font-size: 1rem;
+  height: 100%;
+  display: inline-block;
+}
+.search-input{
+  width:100%;
+}
+.magnifying-glass{
+  width: 32px;
+  margin: 8px;
+
+}
+
+
+/**
+
+
+ Page
+
+
+**/
+.media-video{
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  -webkit-video-playable-inline: true;
+  width: 100%;
+  position: absolute;
+}
+
+.content-post{
+  margin: 0 0 30px 0;
+  padding: 0;
+  background-color: #fff;
+
+}
+
+.main-container{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.vote-container{
+
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 50px !important;
+  background-color: rgba(255,255,255,0.8);
+  padding: 10px;
+  align-items: center;
+  margin: 0;
+}
+.vote-num{
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+  word-break: normal;
+}
+.content-container{
+  background-color: #fff;
+}
+.content-media{
+  height: auto;
+  margin-bottom: 20px;
+}
+.video{
+  display: block;
+  max-height: 100%;
+  object-fit: contain
+}
+.img {
+  width: 100%;
+  height: auto;
+}
+
+
+.reddit-icon{
+  width: 32px;
+  margin: 8px;
+}
+.reddit-word{
+  height: 18px;
+}
+.nav-link1{
+  max-height: 100%;
+}
+.nav{
+  height:48px;
+  flex: 0 0 auto;
+}
+
+.post-list-container{
+  justify-content: center;
+  flex: 0 0 auto;
+
+}
+.comment{
+  margin: 0 0 15px 5px
 }
