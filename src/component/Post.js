@@ -15,7 +15,7 @@ const r = new snoowrap({
 
 const COMMENT_LIMIT = 1;
 const COMMENT_DEPTH = 1;
-const COMMENT_COUNT = 10;
+const COMMENT_COUNT = 5;
 
 
 function Media(props) {
@@ -45,7 +45,7 @@ function Media(props) {
         )  
     }  
     if(!props.content.is_reddit_media_domain) return <a href={props.content.url} target="_blank" rel="noreferrer">{props.content.url}</a>
-    return <img className="img" loop="" muted=""  alt="images" src={props.src}></img>;
+    return <img className="media-img" loop="" muted=""  alt="images" src={props.src}></img>;
 }
 
 /*
@@ -81,8 +81,6 @@ export default function Post({content}) {
         r.getSubmission(content.id).expandReplies({limit:COMMENT_LIMIT, depth: COMMENT_DEPTH})
         .then((c)=> {
             console.log({comments: c.comments});
-
-            // let comment = c.comments.map( (e)=>  `u/${e.author?.name}'\n'{'\n'} <br/> ${e.body} <br/>`)
             setCommentList(c);
         })
         .catch( (e) => {
@@ -93,7 +91,7 @@ export default function Post({content}) {
   
     return (
         
-        <div className="container-fluid row  content-post border">
+        <div className="container-fluid row  content-post">
             {/**
              *  
              * Votes
@@ -115,13 +113,13 @@ export default function Post({content}) {
              * Post container
              * 
              * */}
-            <div className="col col-9 col-xl-7 col-xxl-6 border"> 
+            <div className="col col-12 col-md-10 col-xl-7 col-xxl-6"> 
                 
                 <div className="container-fluid row ">
                     {
                     //Line 1  [Posted by u/username] [5 hours ago] [whatever spam emoji] 
                     }
-                    [Posted by u/{content.author.name}] <TimeAgo time={content.created_utc* 1000}/> 
+                    Posted by u/{content.author.name} <TimeAgo time={content.created_utc* 1000}/> 
                 
                 </div>
                 <div className="container-fluid row  content-title">
@@ -150,10 +148,10 @@ export default function Post({content}) {
              * Comment container
              * 
              * */}
-            <div className="d-none d-xl-block col-xl-3 col-xxl-5  comment-container">
+            <div className="d-none d-xl-block col-xl-4 col-xxl-5  comment-container">
                 Comments <br/> <br/>
                 {commentList?.comments?.map(  (comment, index) => {
-                    if(index>=COMMENT_COUNT) return null
+                    if(index >= COMMENT_COUNT) return null
                     return ( 
                         <div key={comment.id} className="comment"> 
                         u/{comment.author?.name} 

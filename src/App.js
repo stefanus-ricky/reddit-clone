@@ -2,9 +2,6 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 // import axios from 'axios';
 import snoowrap from 'snoowrap';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { fab } from '@fortawesome/free-brands-svg-icons';
-import { fas, faCheckSquare, faCoffee } from '@fortawesome/free-solid-svg-icons';
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,9 +12,6 @@ import {
 import Page from './component/Page'
 
 require('dotenv').config();
-library.add(fab, fas, faCheckSquare, faCoffee);
-
-
 
 const r = new snoowrap({
   userAgent: 'NewReddit/1.0 by Quarrantine',
@@ -25,11 +19,6 @@ const r = new snoowrap({
   clientSecret: process.env.REACT_APP_REDDIT_SECRET,
   refreshToken: process.env.REACT_APP_REFRESH_TOKEN
 });
-// console.log(this.match.params)
-// this.props.location.pathname
-
-// const test =  r.getSubmission('2np694').comment;
-
 
 function App() {
   function handleNavChange (location)  {
@@ -113,26 +102,6 @@ const SAMPLE_CONTENT = [
 //   res.map()
 // })
 
-// async function getAuthCode() {
-//   try {
-//     const response =
-    //  await axios.post("https://www.reddit.com/api/v1/access_token", {
-    //     //data
-    //     "grant_type": "https://oauth.reddit.com/grants/installed_client&/",
-    //     "device_id": "0123456789012345678901234"
-    //  }, {
-  //   auth: {
-  //     username: REDDIT_ID,
-  //     password: REDDIT_SECRET
-  //   }
-  // });
-
-
-//     console.log(response);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
 
 
 

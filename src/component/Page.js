@@ -14,8 +14,6 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas, faCheckSquare, faCoffee } from '@fortawesome/free-solid-svg-icons';
 import Nav from './Nav'
 
-
-
 library.add(fab, fas, faCheckSquare, faCoffee);
 const r = new snoowrap({
     userAgent: 'NewReddit/1.0 by Quarrantine',
@@ -32,9 +30,6 @@ function cbData (data){
     SAMPLE_CONTENT2 =  data.map((arr) => {
       return {
         id: arr.comments
-        // title: data.title,
-        // author: data.title,
-        // url: data.url
       }
     });
     // title, thumbnail, author, created utc, url, ups,num_comments permalink

@@ -22,6 +22,7 @@ code {
 .flex-zero{
   flex: 0 0;
 }
+
 /**
 
 
@@ -29,6 +30,23 @@ code {
 
 
 **/
+
+.reddit-icon{
+  width: 32px;
+  margin: 8px;
+}
+.reddit-word{
+  height: 18px;
+}
+.nav-link1{
+  max-height: 100%;
+}
+.nav{
+  height:48px;
+  flex: 0 0 auto;
+}
+
+
 .header{
   margin-bottom: 150px;
 }
@@ -51,7 +69,6 @@ code {
 
 }
 
-
 /**
 
 
@@ -59,29 +76,19 @@ code {
 
 
 **/
-.media-video{
-  background-position: 50%;
-  background-repeat: no-repeat;
-  background-size: contain;
-  -webkit-video-playable-inline: true;
-  width: 100%;
-  position: absolute;
-}
-
 .content-post{
   margin: 0 0 30px 0;
   padding: 0;
   background-color: #fff;
-
+  display: flex;
+  flex: 1 1 auto;
 }
-
 .main-container{
   display: flex;
   justify-content: center;
   flex-direction: column;
 }
 .vote-container{
-
   display: flex;
   flex-direction: column;
   flex: 0 0 50px !important;
@@ -108,32 +115,25 @@ code {
   max-height: 100%;
   object-fit: contain
 }
-.img {
+.media-video{
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  -webkit-video-playable-inline: true;
+  width: 100%;
+  position: absolute;
+}
+.media-img {
   width: 100%;
   height: auto;
 }
-
-
-.reddit-icon{
-  width: 32px;
-  margin: 8px;
-}
-.reddit-word{
-  height: 18px;
-}
-.nav-link1{
-  max-height: 100%;
-}
-.nav{
-  height:48px;
-  flex: 0 0 auto;
-}
-
 .post-list-container{
   justify-content: center;
   flex: 0 0 auto;
 
 }
+
+
 .comment{
   margin: 0 0 15px 5px
 }
