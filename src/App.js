@@ -42,31 +42,9 @@ function App() {
     </div>
   );
 }
-//<SubChange />
-
-// function SubChange() {
-//   // We can use the `useParams` hook here to access
-//   // the dynamic pieces of the URL.
-//   let { id, contentType } = useParams();
-//   subredditName = id;
-//   console.log({subredditName, contentType})
-//   return 
-// }
 
 /*
 
-<div className="container-fluid row justify-content-center">
-        <div className="row">
-          Header
-        </div>
-        <div className="row">
-          Subreddit title
-        </div>
-        <div className="row post-list-container">
-          <PostList content={content} click={setContent} ref={lastPostElement}/>
-        </div>
-        
-      </div>
 
 */
 
@@ -85,22 +63,7 @@ const SAMPLE_CONTENT = [
   } 
 ];
 
-// const SAMPLE_CONTENT3 = [
-//   {
-//     id:1,
-//     title: "this is title33333333333333",
-//     media: "media"
-//   }, 
-//   {
-//     id:2,
-//     title: "this is title2",
-//     media: "image source2"
-//   } 
-// ];
-// axios.get('link')
-// .then(res=> {
-//   res.map()
-// })
+
 
 
 

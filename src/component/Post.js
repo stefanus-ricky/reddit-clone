@@ -61,7 +61,7 @@ const convertUpvote = (vote ) => {
 const TimeAgo = ({ time }) => <time dateTime={new Date(time).toISOString()}>{timeago(time)}</time>
 
 
-export default function Post({content}) {
+export default function Post({content, ref}) {
     /*function upvotes (){
         return
     }
@@ -151,7 +151,17 @@ export default function Post({content}) {
             <div className="d-none d-xl-block col-xl-4 col-xxl-5  comment-container">
                 Comments <br/> <br/>
                 {commentList?.comments?.map(  (comment, index) => {
+
                     if(index >= COMMENT_COUNT) return null
+                    // last element. add tracker for infinite scroll detection
+                    if(index === COMMENT_COUNT -1) {
+                        return (
+                        <div key={comment.id} className="comment" ref={ref} > 
+                        u/{comment.author?.name} 
+                        <br/> {comment.body} <br/> <br/> 
+                        </div>
+                        )}
+
                     return ( 
                         <div key={comment.id} className="comment"> 
                         u/{comment.author?.name} 
@@ -175,7 +185,8 @@ Post.propTypes = {
     url: propTypes.string,
     ups: propTypes.number,
     num_comments: propTypes.number,
-    is_video:propTypes.bool
+    is_video:propTypes.bool,
+    ref: propTypes.any
 }
 TimeAgo.propTypes= {
     time: propTypes.number

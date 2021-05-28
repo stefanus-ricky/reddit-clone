@@ -12,7 +12,7 @@ import {
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas, faCheckSquare, faCoffee } from '@fortawesome/free-solid-svg-icons';
-import Nav from './Nav'
+import Nav from './Nav';
 
 library.add(fab, fas, faCheckSquare, faCoffee);
 const r = new snoowrap({
@@ -63,12 +63,6 @@ export default function Page() {
         .then((data)=>{
             setContent(data);
             console.log(data);
-            // r.getSubmission(data[0].id).expandReplies({limit: 5, depth: 2})
-            //   .then((c)=> console.log(c))            
-            // let commentID = "t1_" + data[0].id;
-            // r.getContentByIds([commentID])
-            // .then((comment)=>console.log(comment.body));
-          // media.richtextContext.document[0].c[0].t
         })
         .catch( (e) => {
           console.log(e)
@@ -77,22 +71,40 @@ export default function Page() {
         
     },[subredditName]);
 
+
+    // allow navigate to other subreddit via search bar
     function handleSubredditChange (subName)  {
       console.log({subName})
       setSubredditName(subName);
     }
 
+    let lastPostElementRef = useCallback( (e) => {
+      console.log(e);
+    });
+
+
+    // infinite scroll observer
+    const scrollObserver = useRef();
+    const lastPostElement = useCallback((e)=>{
+      if(isLoading) return;
+      if (scrollObserver) scrollObserver.current.disconnect()
+      scrollObserver.current = new IntersectionObserver( lastPost => {
+        if(lastPost[0].isIntersecting){
+          console.log("trigger the infinite scroll");
+        }
+      })
+      if (e) {
+        scrollObserver.current.observe(e);
+      }  
+    }, [isLoading])
+
 
 
     return (
-      <div className="container-fluid row justify-content-center">
-        
+      <div className="container-fluid row justify-content-center">       
         <Nav className="container-fluid row header" onSubmitInput={handleSubredditChange}/>
-          
-          
         <div className="row">
           Change the url into r/[subreddit name] or use searchbar 
-          
         </div>
 
         <div className="row">
@@ -100,9 +112,7 @@ export default function Page() {
         </div>
 
         <div className="row post-list-container">
-          <PostList content={content} />
-
-          
+          <PostList content={content} ref={lastPostElement} />
         </div>
       
     </div>
