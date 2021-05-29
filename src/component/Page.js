@@ -15,6 +15,7 @@ import { fas, faCheckSquare, faCoffee } from '@fortawesome/free-solid-svg-icons'
 import Nav from './Nav';
 
 library.add(fab, fas, faCheckSquare, faCoffee);
+// credential for login into reddit API OAuth2 
 const r = new snoowrap({
     userAgent: 'NewReddit/1.0 by Quarrantine',
     clientId: process.env.REACT_APP_REDDIT_ID,
@@ -44,21 +45,33 @@ export default function Page() {
     const [isLoading, setIsLoading]= useState(false);
     const [pageNum, setPageNum]= useState(0);
     let { contentType, contentName } = useParams();
+    // t= day, week, year
+    let submissionRequestDuration = 'week';
+    // new, hot, top
+    let submissionRequestType = 'top';
+
+    console.log({contentType, contentName })
+    if(!contentName) {
+      if (!contentType){
+        contentType = contentType? contentType: "r";
+        contentName = contentName? contentName: "programming";
+      } else {
+        contentName = contentType;
+      }
+    }
     const [subredditName, setSubredditName]= useState(contentName);
 
-    console.log({contentType, contentName })
-    contentType = contentType? contentType: "r";
-    contentName = contentName? contentName: "hololive"
-    console.log({contentType, contentName })
+    // setSubredditName(contentName);
+    // console.log({contentType, contentName })
 
-
+    // fetch data from reddit API. Currently it take "top" submission with "week" range
     useEffect(() => {
-      console.log(`loading is ${isLoading}`)
+      // console.log(`loading is ${isLoading}`)
       // if(isLoading) return
       setIsLoading(true);
-      console.log({subredditName})
+      // console.log({subredditName})
 
-      r.getTop(subredditName, {t:"year", limit: SUBMISSION_LIMIT})
+      r.getTop(subredditName, {t:submissionRequestDuration, limit: SUBMISSION_LIMIT})
         .then(cbData)
         .then((data)=>{
             setContent(data);
