@@ -73,7 +73,7 @@ export default function Page() {
     const [subredditName, setSubredditName]= useState(contentName);
 
     // setSubredditName(contentName);
-    // console.log({contentType, contentName })
+    console.log({contentType, contentName })
 
     // fetch data from reddit API. Currently it take "top" submission with "week" range
     useEffect(() => {

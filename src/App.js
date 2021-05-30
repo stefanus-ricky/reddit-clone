@@ -32,9 +32,10 @@ function App() {
       <Router>
         <Switch>
           <Route path="/" component={Page} exact />
-          <Route path="/:contentType/:contentName"  component={Page}>
+          <Route path="/:contentType/:contentName"  component={Page} />
+          <Route path="/:contentName"  component={Page} />
 
-          </Route>
+        
       </Switch>
      </Router>
      
