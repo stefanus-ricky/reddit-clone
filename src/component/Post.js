@@ -80,7 +80,7 @@ export default function Post({content, ref}) {
     useEffect(() => {
         r.getSubmission(content.id).expandReplies({limit:COMMENT_LIMIT, depth: COMMENT_DEPTH})
         .then((c)=> {
-            console.log({comments: c.comments});
+            // console.log({comments: c.comments});
             setCommentList(c);
         })
         .catch( (e) => {

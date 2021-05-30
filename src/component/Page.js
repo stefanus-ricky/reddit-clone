@@ -22,6 +22,19 @@ const r = new snoowrap({
     clientSecret: process.env.REACT_APP_REDDIT_SECRET,
     refreshToken: process.env.REACT_APP_REFRESH_TOKEN
 });
+// const fd = new FormData();
+// fd.append("code", code);
+// fd.append("grant_type", "authorization_code");
+// fd.append("redirect_uri", "your_redirect_uri");
+
+// const r = await fetch("https://www.reddit.com/api/v1/access_token", {
+//   headers: {
+//     Authorization:
+//       "Basic " + btoa(unescape(encodeURIComponent(CLIENT_ID + ":" + ""))),
+//   },
+//   method: "POST",
+//   body: fd,
+// });
 
 const SUBMISSION_LIMIT = 10;
 const LOAD_MORE_COUNT = 10;
@@ -34,8 +47,8 @@ function cbData (data){
       }
     });
     // title, thumbnail, author, created utc, url, ups,num_comments permalink
-    console.log({SAMPLE_CONTENT2})
-    console.log({data});
+    // console.log({SAMPLE_CONTENT2})
+    // console.log({data});
     return data
   }
 
@@ -49,8 +62,6 @@ export default function Page() {
     let submissionRequestDuration = 'week';
     // new, hot, top
     let submissionRequestType = 'top';
-
-    console.log({contentType, contentName })
     if(!contentName) {
       if (!contentType){
         contentType = contentType? contentType: "r";
@@ -75,7 +86,7 @@ export default function Page() {
         .then(cbData)
         .then((data)=>{
             setContent(data);
-            console.log(data);
+            // console.log(data);
         })
         .catch( (e) => {
           console.log(e)
@@ -87,7 +98,6 @@ export default function Page() {
 
     // allow navigate to other subreddit via search bar
     function handleSubredditChange (subName)  {
-      console.log({subName})
       setSubredditName(subName);
     }
 

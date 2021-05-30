@@ -4,7 +4,6 @@ import propTypes from 'prop-types';
 
 export default function PostList({content, ref}) {
     if(!content) {
-        console.log(`content is null`)
         return null
     }
 
