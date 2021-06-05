@@ -13,9 +13,11 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas, faCheckSquare, faCoffee } from '@fortawesome/free-solid-svg-icons';
 import Nav from './Nav';
+import axios from 'axios';
 
 library.add(fab, fas, faCheckSquare, faCoffee);
 // credential for login into reddit API OAuth2 
+
 const r = new snoowrap({
     userAgent: 'NewReddit/1.0 by Quarrantine',
     clientId: process.env.REACT_APP_REDDIT_ID,
@@ -82,10 +84,28 @@ export default function Page() {
       setIsLoading(true);
       // console.log({subredditName})
 
+      let apiAdress = "http://localhost:55050/api"
+      // let apiAdress = "localhost:" + process.env.EXPRESS_PORT_USED + "/api"
+      console.log({ apiAdress, a:process.env.EXPRESS_PORT_USED})
+
+      // const fetchdata = await fetch("localhost", {
+      fetch(apiAdress, {
+      method: "GET",
+        // body: {
+        subredditName: subredditName,
+        options: {t:submissionRequestDuration, limit: SUBMISSION_LIMIT}
+        // }
+      })
+      .then((data) => data.json()
+      .then( (fetchdata) =>{
+        // console.log({fetchdata})
+        setContent(fetchdata)
+      }));
+
       r.getTop(subredditName, {t:submissionRequestDuration, limit: SUBMISSION_LIMIT})
         .then(cbData)
         .then((data)=>{
-            setContent(data);
+            // setContent(data);
             // console.log(data);
         })
         .catch( (e) => {
