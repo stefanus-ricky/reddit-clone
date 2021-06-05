@@ -79,8 +79,8 @@ export default function Page() {
 
     // fetch data from reddit API. Currently it take "top" submission with "week" range
     useEffect(() => {
-      // console.log(`loading is ${isLoading}`)
-      // if(isLoading) return
+      console.log(`loading is ${isLoading}`)
+      if(isLoading) return
       setIsLoading(true);
       // console.log({subredditName})
 
@@ -90,28 +90,35 @@ export default function Page() {
 
       // const fetchdata = await fetch("localhost", {
       fetch(apiAdress, {
-      method: "GET",
-        // body: {
-        subredditName: subredditName,
-        options: {t:submissionRequestDuration, limit: SUBMISSION_LIMIT}
-        // }
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          subredditName: subredditName,
+          options: {t:submissionRequestDuration, limit: SUBMISSION_LIMIT}
+        })
       })
       .then((data) => data.json()
       .then( (fetchdata) =>{
         // console.log({fetchdata})
         setContent(fetchdata)
+        setIsLoading(false)
       }));
 
-      r.getTop(subredditName, {t:submissionRequestDuration, limit: SUBMISSION_LIMIT})
-        .then(cbData)
-        .then((data)=>{
-            // setContent(data);
-            // console.log(data);
-        })
-        .catch( (e) => {
-          console.log(e)
-          console.log(`error at submission`)
-        })
+
+      // outdated snoowrap request
+      // r.getTop(subredditName, {t:submissionRequestDuration, limit: SUBMISSION_LIMIT})
+      //   .then(cbData)
+      //   .then((data)=>{
+      //       // setContent(data);
+      //       // console.log(data);
+      //   })
+      //   .catch( (e) => {
+      //     console.log(e)
+      //     console.log(`error at submission`)
+      //   })
         
     },[subredditName]);
 

@@ -78,15 +78,43 @@ export default function Post({content, ref}) {
     const [commentList, setCommentList] = useState([]);
     // fetch comment
     useEffect(() => {
-        r.getSubmission(content.id).expandReplies({limit:COMMENT_LIMIT, depth: COMMENT_DEPTH})
-        .then((c)=> {
-            // console.log({comments: c.comments});
-            setCommentList(c);
+        console.log("fetch comment")
+        console.log(content.id)
+        
+      let apiAdress = "http://localhost:55050/api";
+
+      fetch(apiAdress, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            contentName: "comment",
+            contentId: content.id,
+            options: {limit:COMMENT_LIMIT, depth: COMMENT_DEPTH}
         })
-        .catch( (e) => {
-            console.log(e)
-            console.log(`error at comments`)
-          })  
+      })
+      .then((data) => data.json()
+      .then( (fetchdata) =>{
+        console.log({fetchdata})
+        setCommentList(fetchdata);
+      }));
+
+
+      /* deprecated snoowrap
+      r.getSubmission(content.id).expandReplies({limit:COMMENT_LIMIT, depth: COMMENT_DEPTH})
+      .then((c)=> {
+          // console.log({comments: c.comments});
+          setCommentList(c);
+      })
+      .catch( (e) => {
+          console.log(e)
+          console.log(`error at comments`)
+        })  
+
+
+      */
     }, [])
   
     return (
