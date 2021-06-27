@@ -3,15 +3,8 @@ import React, {useState, useEffect} from 'react'
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactHlsPlayer from 'react-hls-player';
-import snoowrap from 'snoowrap';
 import timeago from 'epoch-timeago';
 
-const r = new snoowrap({
-    userAgent: 'NewReddit/1.0 by Quarrantine',
-    clientId: process.env.REACT_APP_REDDIT_ID,
-    clientSecret: process.env.REACT_APP_REDDIT_SECRET,
-    refreshToken: process.env.REACT_APP_REFRESH_TOKEN
-});
 
 const COMMENT_LIMIT = 1;
 const COMMENT_DEPTH = 1;
@@ -61,7 +54,7 @@ const convertUpvote = (vote ) => {
 const TimeAgo = ({ time }) => <time dateTime={new Date(time).toISOString()}>{timeago(time)}</time>
 
 
-export default function Post({content, ref}) {
+export default function Post({content, refs}) {
     /*function upvotes (){
         return
     }
@@ -78,8 +71,8 @@ export default function Post({content, ref}) {
     const [commentList, setCommentList] = useState([]);
     // fetch comment
     useEffect(() => {
-        console.log("fetch comment")
-        console.log(content.id)
+        // console.log("fetch comment")
+        // console.log(content.id)
         
       let apiAdress = "http://localhost:55050/api";
 
@@ -90,14 +83,14 @@ export default function Post({content, ref}) {
             'Accept': 'application/json'
         },
         body: JSON.stringify({
-            contentName: "comment",
+            contentType: "getComment",
             contentId: content.id,
             options: {limit:COMMENT_LIMIT, depth: COMMENT_DEPTH}
         })
       })
       .then((data) => data.json()
       .then( (fetchdata) =>{
-        console.log({fetchdata})
+        // console.log({fetchdata})
         setCommentList(fetchdata);
       }));
 
@@ -126,13 +119,12 @@ export default function Post({content, ref}) {
              * 
              * */}
 
-            <div className="col  vote-container">
+            <div className="col d-none d-sm-block vote-container ">
                 <FontAwesomeIcon className="arrow-icon upvote" icon={["fas", "arrow-alt-circle-up"]} />
-                <div className="row vote-num">
+                <div className="row vote-num ps-1 pe-1">
                     {convertUpvote(content.ups)}
                 </div>
                 <FontAwesomeIcon className="arrow-icon downvote" icon={["fas", "arrow-alt-circle-down"]} />
-                
             </div>
 
 
@@ -141,7 +133,7 @@ export default function Post({content, ref}) {
              * Post container
              * 
              * */}
-            <div className="col col-12 col-md-10 col-xl-7 col-xxl-6"> 
+            <div className="col col-12 col-md-10 col-xl-7 col-xxl-6 post-container m-1 me-0 "> 
                 
                 <div className="container-fluid row ">
                     {
@@ -163,19 +155,33 @@ export default function Post({content, ref}) {
                     }
                     <Media content={content} isVideo={content.is_video} src={content.secure_media? content.secure_media.reddit_video: content.url} />
                 </div>
-                <div className="container-fluid row ">
-                    {
-                    // Line 4 Nav: Comment, share
-                    }
-                    {convertUpvote(content.num_comments)} comments
+                <div className="row container-fluid">
+                    <div className="col d-flex d-sm-none vote-container-small">
+                        <FontAwesomeIcon className="arrow-icon upvote vote-small" icon={["fas", "arrow-alt-circle-up"]} />
+                        <div className="vote-num ps-1 pe-1" >
+                            {convertUpvote(content.ups)}
+                        </div>
+                        <FontAwesomeIcon className="arrow-icon downvote vote-small" icon={["fas", "arrow-alt-circle-down"]} />
+                    </div>
+                    
                 
+                    <div className=" col ">
+                        {
+                        // Line 4 Nav: Comment, share
+                        }
+                        {convertUpvote(content.num_comments)} comments
+                    
+                    </div>
                 </div>
+                
             </div>
+
             {/**
              *  
              * Comment container
              * 
              * */}
+
             <div className="d-none d-xl-block col-xl-4 col-xxl-5  comment-container">
                 Comments <br/> <br/>
                 {commentList?.comments?.map(  (comment, index) => {
@@ -184,7 +190,7 @@ export default function Post({content, ref}) {
                     // last element. add tracker for infinite scroll detection
                     if(index === COMMENT_COUNT -1) {
                         return (
-                        <div key={comment.id} className="comment" ref={ref} > 
+                        <div key={comment.id} className="comment" refs={refs} > 
                         u/{comment.author?.name} 
                         <br/> {comment.body} <br/> <br/> 
                         </div>
@@ -214,7 +220,7 @@ Post.propTypes = {
     ups: propTypes.number,
     num_comments: propTypes.number,
     is_video:propTypes.bool,
-    ref: propTypes.any
+    refs: propTypes.any
 }
 TimeAgo.propTypes= {
     time: propTypes.number

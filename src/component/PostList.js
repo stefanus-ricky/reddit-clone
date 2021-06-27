@@ -2,15 +2,15 @@ import React from 'react'
 import Post from './Post';
 import propTypes from 'prop-types';
 
-export default function PostList({content, ref}) {
+export default function PostList({content, refs}) {
     if(!content) {
         return null
     }
 
     return (
-        <div>
+        <div className="mx-2">
             {content.map( (post, index)=>{
-                if(index === content.length-1) return  <Post key={post.id} content={post} ref={ref}  />
+                if(index === content.length-1) return  <Post key={post.id} content={post} refs={refs}  />
                 return <Post key={post.id} content={post}  />
                 //<div key={item.id}>{item.title} </div>
             })}
@@ -23,5 +23,5 @@ PostList.propTypes = {
     content: propTypes.array,
     title: propTypes.string,
     media: propTypes.string,
-    ref: propTypes.any
+    refs: propTypes.any
 }
