@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import PostList from './PostList';
-import snoowrap from 'snoowrap';
 import {
   BrowserRouter as Router,
   Switch,
@@ -11,36 +10,24 @@ import {
 } from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { fas, faCheckSquare, faCoffee } from '@fortawesome/free-solid-svg-icons';
+import { fas, faCheckSquare, faCoffee, faHotdog } from '@fortawesome/free-solid-svg-icons';
 import Nav from './Nav';
 import axios from 'axios';
 
 library.add(fab, fas, faCheckSquare, faCoffee);
 // credential for login into reddit API OAuth2 
 
-const r = new snoowrap({
-    userAgent: 'NewReddit/1.0 by Quarrantine',
-    clientId: process.env.REACT_APP_REDDIT_ID,
-    clientSecret: process.env.REACT_APP_REDDIT_SECRET,
-    refreshToken: process.env.REACT_APP_REFRESH_TOKEN
-});
+
 // const fd = new FormData();
 // fd.append("code", code);
 // fd.append("grant_type", "authorization_code");
 // fd.append("redirect_uri", "your_redirect_uri");
 
-// const r = await fetch("https://www.reddit.com/api/v1/access_token", {
-//   headers: {
-//     Authorization:
-//       "Basic " + btoa(unescape(encodeURIComponent(CLIENT_ID + ":" + ""))),
-//   },
-//   method: "POST",
-//   body: fd,
-// });
 
-const SUBMISSION_LIMIT = 10;
-const LOAD_MORE_COUNT = 10;
+const SUBMISSION_LIMIT = parseInt(process.env.REACT_APP_SUBMISSION_LIMIT) || 10;
+const LOAD_MORE_COUNT = parseInt(process.env.REACT_APP_LOAD_MORE_COUNT) || 10;
 let SAMPLE_CONTENT2;
+console.log(SUBMISSION_LIMIT, " env is ", process.env.REACT_APP_SUBMISSION_LIMIT)
 
 function cbData (data){
     SAMPLE_CONTENT2 =  data.map((arr) => {
@@ -59,70 +46,66 @@ export default function Page() {
     const [content, setContent]= useState();
     const [isLoading, setIsLoading]= useState(false);
     const [pageNum, setPageNum]= useState(0);
-    let { contentType, contentName } = useParams();
+    let { pageType, contentName } = useParams();
     // t= day, week, year
     let submissionRequestDuration = 'week';
     // new, hot, top
     let submissionRequestType = 'top';
     if(!contentName) {
-      if (!contentType){
-        contentType = contentType? contentType: "r";
+      if (!pageType){
+        pageType = pageType? pageType: "r";
         contentName = contentName? contentName: "programming";
       } else {
-        contentName = contentType;
+        contentName = pageType;
       }
     }
     const [subredditName, setSubredditName]= useState(contentName);
 
     // setSubredditName(contentName);
-    console.log({contentType, contentName })
+    // console.log({pageType, contentName })
 
     // fetch data from reddit API. Currently it take "top" submission with "week" range
     useEffect(() => {
-      console.log(`loading is ${isLoading}`)
+      // console.log(`loading is ${isLoading}`)
       if(isLoading) return
       setIsLoading(true);
       // console.log({subredditName})
 
-      let apiAdress = "http://localhost:55050/api"
+      let apiAddress = process.env.REACT_APP_REDDIT_API_ADDRESS || "http://localhost:55050/api";
       // let apiAdress = "localhost:" + process.env.EXPRESS_PORT_USED + "/api"
-      console.log({ apiAdress, a:process.env.EXPRESS_PORT_USED})
+      console.log({ apiAdress: apiAddress, a:process.env.REACT_APP_EXPRESS_PORT_USED})
 
       // const fetchdata = await fetch("localhost", {
-      fetch(apiAdress, {
+      fetch(apiAddress, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
         body: JSON.stringify({
+          token:"empty",
+          contentType: "getTop",
           subredditName: subredditName,
           options: {t:submissionRequestDuration, limit: SUBMISSION_LIMIT}
         })
       })
       .then((data) => data.json()
       .then( (fetchdata) =>{
-        // console.log({fetchdata})
+        console.log({fetchdata})
         setContent(fetchdata)
         setIsLoading(false)
-      }));
+      }))
+      .catch((e)=>{
+        console.log(e)
+      });
 
+      /*
 
-      // outdated snoowrap request
-      // r.getTop(subredditName, {t:submissionRequestDuration, limit: SUBMISSION_LIMIT})
-      //   .then(cbData)
-      //   .then((data)=>{
-      //       // setContent(data);
-      //       // console.log(data);
-      //   })
-      //   .catch( (e) => {
-      //     console.log(e)
-      //     console.log(`error at submission`)
-      //   })
-        
+      */
     },[subredditName]);
 
-
+    
+    
     // allow navigate to other subreddit via search bar
     function handleSubredditChange (subName)  {
       setSubredditName(subName);
@@ -140,7 +123,7 @@ export default function Page() {
       if (scrollObserver) scrollObserver.current.disconnect()
       scrollObserver.current = new IntersectionObserver( lastPost => {
         if(lastPost[0].isIntersecting){
-          console.log("trigger the infinite scroll");
+          // console.log("trigger the infinite scroll");
         }
       })
       if (e) {
@@ -151,23 +134,25 @@ export default function Page() {
 
 
     return (
-      <div className="container-fluid row justify-content-center">       
+      <div className="container-fluid justify-content-center page-container">       
         <Nav className="container-fluid row header" onSubmitInput={handleSubredditChange}/>
-        <div className="row">
-          Change the url into r/[subreddit name] or use searchbar 
+        <div className="row px-4 mb-5">
+          This page takes data from Reddit API and populate it with recent data <br/>
+          <br/>
+          Change the url into r/[subreddit name] or put [subreddit name] at searchbar and click enter
         </div>
 
-        <div className="row">
-          Subreddit name : {subredditName}
+        <div className="row px-4 ">
+          Subreddit name : {subredditName} 
         </div>
 
-        <div className="row post-list-container">
-          <PostList content={content} ref={lastPostElement} />
+        <div className="row post-list-container px-4">
+          <PostList content={content} refs={lastPostElement} />
         </div>
       
     </div>
     )
-}
+} 
 
 /*
 
