@@ -8,7 +8,7 @@ export default function PostList({content, refs}) {
     }
 
     return (
-        <div className="mx-2">
+        <div className="mx-2 flex">
             {content.map( (post, index)=>{
                 if(index === content.length-1) return  <Post key={post.id} content={post} refs={refs}  />
                 return <Post key={post.id} content={post}  />

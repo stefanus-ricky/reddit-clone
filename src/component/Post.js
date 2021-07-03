@@ -119,7 +119,7 @@ export default function Post({content, refs}) {
              * 
              * */}
 
-            <div className="col d-none d-sm-block vote-container ">
+            <div className="col d-none d-sm-flex vote-container ">
                 <FontAwesomeIcon className="arrow-icon upvote" icon={["fas", "arrow-alt-circle-up"]} />
                 <div className="row vote-num ps-1 pe-1">
                     {convertUpvote(content.ups)}
@@ -133,7 +133,7 @@ export default function Post({content, refs}) {
              * Post container
              * 
              * */}
-            <div className="col col-12 col-md-10 col-xl-7 col-xxl-6 post-container m-1 me-0 "> 
+            <div className="col col-12 col-md-9 col-xl-6 col-xxl-6 post-container m-1 me-0 "> 
                 
                 <div className="container-fluid row ">
                     {
@@ -182,7 +182,7 @@ export default function Post({content, refs}) {
              * 
              * */}
 
-            <div className="d-none d-xl-block col-xl-4 col-xxl-5  comment-container">
+            <div className="d-none d-xl-block col-md-3 col-xl-4 col-xxl-4  comment-container">
                 Comments <br/> <br/>
                 {commentList?.comments?.map(  (comment, index) => {
 
