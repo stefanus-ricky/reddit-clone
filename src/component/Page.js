@@ -142,7 +142,7 @@ export default function Page() {
           Change the url into r/[subreddit name] or put [subreddit name] at searchbar and click enter
         </div>
 
-        <div className="row px-4 ">
+        <div className="row px-4 mb-4">
           Subreddit name : {subredditName} 
         </div>
 
