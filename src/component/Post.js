@@ -62,20 +62,22 @@ export default function Post({content, infiniteScrollRef}) {
     useEffect(() => {
         // console.log("fetch comment")
         // console.log(content.id)
-        
-      let apiAdress = "http://localhost:55050/api";
-
-      fetch(apiAdress, {
+      let apiAddress = process.env.REACT_APP_REDDIT_API_ADDRESS || "http://localhost:55050/api";
+      let bodyParams = {
+        contentType: "getComment",
+        contentId: content.id,
+        options: {
+            limit:COMMENT_LIMIT, 
+            depth: COMMENT_DEPTH
+        }
+      };
+      fetch(apiAddress, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify({
-            contentType: "getComment",
-            contentId: content.id,
-            options: {limit:COMMENT_LIMIT, depth: COMMENT_DEPTH}
-        })
+        body: JSON.stringify(bodyParams)
       })
       .then((data) => data.json()
       .then( (fetchdata) =>{
