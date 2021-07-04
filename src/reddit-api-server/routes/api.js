@@ -13,10 +13,9 @@ const r = new snoowrap({
 });
 
 function postAndGet (req,res,next) {
-    console.debug({reqbody: req.body});
+    // console.debug({reqbody: req.body});
     const {subredditName, options, contentType, contentId} = req.body;
 
-    console.debug({subredditName, options, contentType, contentId});
     console.debug(contentType == "comment")
     
     
@@ -56,7 +55,8 @@ function postAndGet (req,res,next) {
             break;
         case "getTop":
             (async function () {
-                // console.debug("requesting post data")
+                console.debug("requesting getTop data")
+                console.debug({reqbody: req.body});
                 let data = await r.getTop(subredditName, options)
                 // console.debug({data})
                 res.send(data);
@@ -65,7 +65,8 @@ function postAndGet (req,res,next) {
             break;
         case "getSubredditInfo":
             (async function () {
-                console.log("requesting post data")
+                console.log("requesting getSubredditInfo data")
+                console.debug({reqbody: req.body});
                 let subred = await r.getSubreddit(subredditName)
                 let title = await subred.title
                 let icon = await subred.community_icon

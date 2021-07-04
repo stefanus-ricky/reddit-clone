@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, {useState, useEffect, useRef, useCallback, useContext} from 'react';
 import PostList from './PostList';
 import {
   BrowserRouter as Router,
@@ -15,41 +15,18 @@ import Nav from './Nav';
 import axios from 'axios';
 
 library.add(fab, fas, faCheckSquare, faCoffee);
-// credential for login into reddit API OAuth2 
-
-
-// const fd = new FormData();
-// fd.append("code", code);
-// fd.append("grant_type", "authorization_code");
-// fd.append("redirect_uri", "your_redirect_uri");
-
-
 const SUBMISSION_LIMIT = parseInt(process.env.REACT_APP_SUBMISSION_LIMIT) || 10;
 const LOAD_MORE_COUNT = parseInt(process.env.REACT_APP_LOAD_MORE_COUNT) || 10;
-let SAMPLE_CONTENT2;
-console.log(SUBMISSION_LIMIT, " env is ", process.env.REACT_APP_SUBMISSION_LIMIT)
-
-function cbData (data){
-    SAMPLE_CONTENT2 =  data.map((arr) => {
-      return {
-        id: arr.comments
-      }
-    });
-    // title, thumbnail, author, created utc, url, ups,num_comments permalink
-    // console.log({SAMPLE_CONTENT2})
-    // console.log({data});
-    return data
-  }
 
 
 export default function Page() {
-    const [content, setContent]= useState();
-    const [isLoading, setIsLoading]= useState(false);
-    const [pageNum, setPageNum]= useState(0);
+    const [content, setContent]= useState([]);
+    const [isLoading, setIsLoading]= useState(true);
+    const [pageNum, setPageNum]= useState(1);
     let { pageType, contentName } = useParams();
-    // t= day, week, year
+    // t = day| week| year
     let submissionRequestDuration = 'week';
-    // new, hot, top
+    // submissionRequestType = new | hot | top
     let submissionRequestType = 'top';
     if(!contentName) {
       if (!pageType){
@@ -66,33 +43,38 @@ export default function Page() {
 
     // fetch data from reddit API. Currently it take "top" submission with "week" range
     useEffect(() => {
-      // console.log(`loading is ${isLoading}`)
-      if(isLoading) return
       setIsLoading(true);
-      // console.log({subredditName})
-
       let apiAddress = process.env.REACT_APP_REDDIT_API_ADDRESS || "http://localhost:55050/api";
       // let apiAdress = "localhost:" + process.env.EXPRESS_PORT_USED + "/api"
-      console.log({ apiAdress: apiAddress, a:process.env.REACT_APP_EXPRESS_PORT_USED})
+      // console.debug({ apiAdress: apiAddress, a:process.env.REACT_APP_EXPRESS_PORT_USED})
 
+      let bodyParams = {
+        token:"empty",
+        contentType: "getTop",
+        subredditName: subredditName,
+        options: {
+          t:submissionRequestDuration, 
+          limit: SUBMISSION_LIMIT
+        }
+      };
+
+      if(pageNum>1) {
+        bodyParams.options.after = "t3_" + lastPostId.current;
+      }
       // const fetchdata = await fetch("localhost", {
+      // console.debug({bodyParams, pageNum, lastPostId})
       fetch(apiAddress, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({
-          token:"empty",
-          contentType: "getTop",
-          subredditName: subredditName,
-          options: {t:submissionRequestDuration, limit: SUBMISSION_LIMIT}
-        })
+        body: JSON.stringify(bodyParams)
       })
       .then((data) => data.json()
       .then( (fetchdata) =>{
-        console.log({fetchdata})
-        setContent(fetchdata)
+        // console.debug({fetchdata})
+        setContent(previousData => previousData.concat(fetchdata))
         setIsLoading(false)
       }))
       .catch((e)=>{
@@ -102,7 +84,7 @@ export default function Page() {
       /*
 
       */
-    },[subredditName]);
+    },[subredditName, pageNum]);
 
     
     
@@ -111,27 +93,34 @@ export default function Page() {
       setSubredditName(subName);
     }
 
-    let lastPostElementRef = useCallback( (e) => {
-      console.log(e);
-    });
-
-
     // infinite scroll observer
     const scrollObserver = useRef();
-    const lastPostElement = useCallback((e)=>{
+    let lastPostId= useRef();
+
+    const infiniteScrollRef = useCallback((component)=>{
       if(isLoading) return;
-      if (scrollObserver) scrollObserver.current.disconnect()
+      // console.log("page ref")
+      // console.log({component, isLoading, id:component?.id})
+      if (scrollObserver.current) {
+        scrollObserver.current.disconnect()
+      }
       scrollObserver.current = new IntersectionObserver( lastPost => {
         if(lastPost[0].isIntersecting){
-          // console.log("trigger the infinite scroll");
+          loadMore(lastPostId)
+          setPageNum( pageNum+1)
         }
       })
-      if (e) {
-        scrollObserver.current.observe(e);
+      if (component) {
+        scrollObserver.current.observe(component);
+        lastPostId.current = component.id
+        // console.log({componentid:component?.id})
       }  
     }, [isLoading])
 
-
+    function loadMore(lastPostId) {
+      // console.log(`load more is triggered`);
+      // console.log(`loading more from `, lastPostId)
+    }
 
     return (
       <div className="container-fluid justify-content-center page-container">       
@@ -147,48 +136,10 @@ export default function Page() {
         </div>
 
         <div className="row post-list-container px-4">
-          <PostList content={content} refs={lastPostElement} />
+          <PostList content={content} infiniteScrollRef={infiniteScrollRef}  />
         </div>
       
     </div>
     )
 } 
-
-/*
-
-ref={lastPostElement}
-      const scrollObserver = useRef();
-      const lastPostElement = useCallback((e)=>{
-        if(isLoading) return;
-        if (scrollObserver) scrollObserver.current.disconnect()
-        scrollObserver.current = new IntersectionObserver( lastPost => {
-          if(e[0].isIntersecting){
-            console.log("trigger the infinite scroll");
-          }
-    
-        })
-        if (e) {
-          scrollObserver.current.observe(e);
-        }
-    
-      }, [])
-
-
-*/
-
-
-const SAMPLE_CONTENT = [
-    {
-      id:"1",
-      title: "Loading post, please waiting",
-      media: "media", 
-      created_utc: Date.now()
-    }, 
-    {
-      id:"2",
-      title: "Loading post, please waiting",
-      media: "image source2",
-      created_utc: Date.now()
-    } 
-  ];
   

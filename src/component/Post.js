@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactHlsPlayer from 'react-hls-player';
@@ -41,6 +41,8 @@ function Media(props) {
     return <img className="media-img" loop="" muted=""  alt="images" src={props.src}></img>;
 }
 
+
+
 /*
     Change upvote format into one decimal place 10.1 k or 3.5m
 */
@@ -54,20 +56,7 @@ const convertUpvote = (vote ) => {
 const TimeAgo = ({ time }) => <time dateTime={new Date(time).toISOString()}>{timeago(time)}</time>
 
 
-export default function Post({content, refs}) {
-    /*function upvotes (){
-        return
-    }
-
-    constructor(props) {
-    super(props)
-
-    this.state = {
-      loopActive: false,
-      shuffleActive: false,
-    }
-  }
-    */
+export default function Post({content, infiniteScrollRef}) {
     const [commentList, setCommentList] = useState([]);
     // fetch comment
     useEffect(() => {
@@ -133,13 +122,13 @@ export default function Post({content, refs}) {
              * Post container
              * 
              * */}
-            <div className="col col-12 col-md-9 col-xl-6 col-xxl-6 post-container m-1 me-0 "> 
+            <div className="col col-12 col-md-9 col-xl-6 col-xxl-6 post-container m-1 me-0" ref={infiniteScrollRef} id={content.id}  > 
                 
                 <div className="container-fluid row ">
                     {
                     //Line 1  [Posted by u/username] [5 hours ago] [whatever spam emoji] 
                     }
-                    Posted by u/{content.author.name} <TimeAgo time={content.created_utc* 1000}/> 
+                    Posted by u/{content.author} <TimeAgo time={content.created_utc* 1000}/> 
                 
                 </div>
                 <div className="container-fluid row  content-title">
@@ -153,7 +142,11 @@ export default function Post({content, refs}) {
                     {
                     //Line 3  Media [Image] 
                     }
-                    <Media content={content} isVideo={content.is_video} src={content.secure_media? content.secure_media.reddit_video: content.url} />
+                    <Media 
+                    content={content} 
+                    isVideo={content.is_video} 
+                    src={content.secure_media?content.secure_media.reddit_video: content.url} 
+                    id={content.id}/>
                 </div>
                 <div className="row container-fluid">
                     <div className="col d-flex d-sm-none vote-container-small">
@@ -185,21 +178,25 @@ export default function Post({content, refs}) {
             <div className="d-none d-xl-block col-md-3 col-xl-4 col-xxl-4  comment-container">
                 Comments <br/> <br/>
                 {commentList?.comments?.map(  (comment, index) => {
+                    console.log({comment})
 
                     if(index >= COMMENT_COUNT) return null
                     // last element. add tracker for infinite scroll detection
-                    if(index === COMMENT_COUNT -1) {
-                        return (
-                        <div key={comment.id} className="comment" refs={refs} > 
-                        u/{comment.author?.name} 
-                        <br/> {comment.body} <br/> <br/> 
-                        </div>
-                        )}
+                    // if(index === commentList.comments.length -1) {
+                    //     return (
+                    //     <div key={comment.id} className="comment"  > 
+                    //     u/{comment.author} 
+                    //     <br/> {comment.body} <br/> <br/> 
+                    //     </div>
+                    //     )}
 
                     return ( 
                         <div key={comment.id} className="comment"> 
-                        u/{comment.author?.name} 
-                        <br/> {comment.body} <br/> <br/> 
+                        u/{comment.author}    
+                        <br/> 
+                        <TimeAgo time={comment.created_utc* 1000}/>
+                        <br/> 
+                        {comment.body} <br/> <br/> 
                         </div>
                     ) 
                 })}
@@ -220,7 +217,7 @@ Post.propTypes = {
     ups: propTypes.number,
     num_comments: propTypes.number,
     is_video:propTypes.bool,
-    refs: propTypes.any
+    infiniteScrollRef: propTypes.any,
 }
 TimeAgo.propTypes= {
     time: propTypes.number
