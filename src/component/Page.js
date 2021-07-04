@@ -139,7 +139,7 @@ export default function Page() {
         </div>
         {/* 
         */}
-        <div className="col-md-10 col-xl-12 col-xxl-9 post-list-container px-4">
+        <div className="col-md-10 col-xl-10 col-xxl-9 post-list-container px-4">
           <PostList content={content} infiniteScrollRef={infiniteScrollRef}  />
         </div>
       
