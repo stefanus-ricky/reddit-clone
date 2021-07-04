@@ -180,8 +180,7 @@ export default function Post({content, infiniteScrollRef}) {
             <div className="d-none d-xl-block col-md-3 col-xl-4 col-xxl-4  comment-container">
                 Comments <br/> <br/>
                 {commentList?.comments?.map(  (comment, index) => {
-                    console.log({comment})
-
+                    // console.log({comment})
                     if(index >= COMMENT_COUNT) return null
                     // last element. add tracker for infinite scroll detection
                     // if(index === commentList.comments.length -1) {

@@ -91,6 +91,8 @@ export default function Page() {
     // allow navigate to other subreddit via search bar
     function handleSubredditChange (subName)  {
       setSubredditName(subName);
+      setContent([]);
+      setPageNum(1);
     }
 
     // infinite scroll observer

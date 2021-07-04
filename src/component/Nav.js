@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import propTypes from 'prop-types';
 
 export default function Nav(props) {
@@ -12,8 +12,8 @@ export default function Nav(props) {
         // alert('Not implemented yet');
         //     this.setState({value: event.target.value});
         props.onSubmitInput(event.target[0].value);
-        console.log(event.target[0].value)            
-        console.log({value})            
+        // console.log(event.target[0].value)            
+        // console.log({value})            
         event.preventDefault();
     }
 
