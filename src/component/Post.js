@@ -123,8 +123,9 @@ export default function Post({content, infiniteScrollRef}) {
              *  
              * Post container
              * 
+             * 
              * */}
-            <div className="col col-12 col-md-9 col-xl-6 col-xxl-6 post-container m-1 me-0" ref={infiniteScrollRef} id={content.id}  > 
+            <div className="col col-12 col-sm-10 col-md-9  col-xl-6 col-xxl-6 post-container m-1 me-0" ref={infiniteScrollRef} id={content.id}  > 
                 
                 <div className="container-fluid row ">
                     {
@@ -177,7 +178,7 @@ export default function Post({content, infiniteScrollRef}) {
              * 
              * */}
 
-            <div className="d-none d-xl-block col-md-3 col-xl-4 col-xxl-4  comment-container">
+            <div className="d-none d-xl-block col-xl-4 col-xxl-3 comment-container">
                 Comments <br/> <br/>
                 {commentList?.comments?.map(  (comment, index) => {
                     // console.log({comment})

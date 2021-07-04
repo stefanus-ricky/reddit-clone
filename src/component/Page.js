@@ -23,6 +23,7 @@ export default function Page() {
     const [content, setContent]= useState([]);
     const [isLoading, setIsLoading]= useState(true);
     const [pageNum, setPageNum]= useState(1);
+    const [subredditInfo, setSubredditInfo] = useState();
     let { pageType, contentName } = useParams();
     // t = day| week| year
     let submissionRequestDuration = 'week';
@@ -136,8 +137,9 @@ export default function Page() {
         <div className="row px-4 mb-4">
           Subreddit name : {subredditName} 
         </div>
-
-        <div className="row post-list-container px-4">
+        {/* 
+        */}
+        <div className="col-md-10 col-xl-12 col-xxl-9 post-list-container px-4">
           <PostList content={content} infiniteScrollRef={infiniteScrollRef}  />
         </div>
       
