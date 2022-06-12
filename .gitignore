@@ -18,3 +18,7 @@ node_modules/
 
 npm-debug.log*
 request.rest
+
+# aws
+.aws
+credentials

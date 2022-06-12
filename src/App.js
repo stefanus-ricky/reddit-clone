@@ -4,13 +4,15 @@ import React, {useState, useEffect, useRef, useCallback} from 'react';
 import Nav from './component/Nav';
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   Link,
   useParams
 } from "react-router-dom";
 import Page from './component/Page'
-require('dotenv').config();
+import Consent from './component/Consent'
+
+// require('dotenv').config();
 
 
 
@@ -25,13 +27,15 @@ function App() {
 
       <Router>
         {/* <Nav className="container-fluid row header" onSubmitInput={handleSubredditChange}/> */}
-        <Switch>
+        <Routes>
           <Route path="/" component={Page} exact />
-          <Route path="/:contentType/:contentName"  component={Page} />
-          <Route path="/:contentName"  component={Page} />
+          <Route path="/permission-url"  component={Consent} exact />
+          <Route path="/r/:contentType/:contentName"  component={Page} />
+          <Route path="/r/:contentName"  component={Page} />
+
 
         
-      </Switch>
+      </Routes>
      </Router>
      
       

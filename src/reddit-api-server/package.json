@@ -3,9 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.105.0",
+    "@aws-sdk/lib-dynamodb": "^3.105.0",
+    "axios": "^0.27.2",
     "cookie-parser": "~1.4.6",
     "cors": "^2.8.5",
     "debug": "~4.3.4",
@@ -15,5 +18,8 @@
     "jade": "~1.11.0",
     "morgan": "~1.10.0",
     "snoowrap": "^1.23.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
   }
 }
