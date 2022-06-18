@@ -3,7 +3,7 @@ import React, {useState, useEffect, useRef, useCallback} from 'react';
 // import axios from 'axios';
 import Nav from './component/Nav';
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Routes,
   Route,
   Link,
@@ -25,7 +25,7 @@ function App() {
   return (
     <div className="main-container container-fluid"  >
 
-      <Router>
+      <BrowserRouter>
         {/* <Nav className="container-fluid row header" onSubmitInput={handleSubredditChange}/> */}
         <Routes>
           <Route path="/" component={Page} exact />
@@ -36,7 +36,7 @@ function App() {
 
         
       </Routes>
-     </Router>
+     </BrowserRouter>
      
       
     </div>
