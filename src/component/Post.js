@@ -2,7 +2,7 @@
 import React, {useState, useEffect, useCallback} from 'react'
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ReactHlsPlayer from 'react-hls-player';
+// import ReactHlsPlayer from 'react-hls-player';
 import timeago from 'epoch-timeago';
 
 
@@ -19,23 +19,21 @@ function Media(props) {
 */
     if (isVideo) {    
         if(!props.content.is_reddit_media_domain) return <a href={props.src.fallback_url}>{props.src.fallback_url}</a>
-        return (
-
-            <ReactHlsPlayer
-                src= {props.src.hls_url}
-                autoPlay={false}
-                controls={true}
-                width="100%"
-                height="auto"
-                hlsConfig={{
-                    maxBufferLength:30,
-                    maxBufferSize: 15,
-                    chunkDurationTarget: 12000
-                  }}
-            />
-            
-        
-        )  
+        return null
+        // return (
+        //     <ReactHlsPlayer
+        //         src= {props.src.hls_url}
+        //         autoPlay={false}
+        //         controls={true}
+        //         width="100%"
+        //         height="auto"
+        //         hlsConfig={{
+        //             maxBufferLength:30,
+        //             maxBufferSize: 15,
+        //             chunkDurationTarget: 12000
+        //           }}
+        //     />
+        // )  
     }  
     if(!props.content.is_reddit_media_domain) return <a href={props.content.url} target="_blank" rel="noreferrer">{props.content.url}</a>
     return <img className="media-img" loop="" muted=""  alt="images" src={props.src}></img>;
@@ -56,7 +54,8 @@ const convertUpvote = (vote ) => {
 const TimeAgo = ({ time }) => <time dateTime={new Date(time).toISOString()}>{timeago(time)}</time>
 
 
-export default function Post({content, infiniteScrollRef}) {
+export default function Post(props) {
+    const {content, infiniteScrollRef} = props
     const [commentList, setCommentList] = useState([]);
     // fetch comment
     useEffect(() => {
