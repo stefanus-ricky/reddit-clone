@@ -95,14 +95,19 @@ export default function Page() {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          data: JSON.stringify(bodyParams)
+          data: JSON.stringify(bodyParams),
+          withCredentials:true
         })
-        const fetchdata = response.data
-        console.debug({fetchdata})
-        setContent(previousData => previousData.concat(fetchdata))
-        setIsLoading(false)
+        if(response.ok) {
+          const fetchdata = response.data
+          console.debug({fetchdata})
+          setContent(previousData => previousData.concat(fetchdata))
+          setIsLoading(false)
+        } else {
+          console.error(response)
+        }
       } catch (e){
-        console.log(e);
+        console.error(e);
       }
     }
 

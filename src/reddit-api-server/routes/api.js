@@ -1,44 +1,25 @@
 var snoowrap = require('snoowrap')
 var express = require('express');
 var router = express.Router();
+require('dotenv').config();
 
-console.log('printing environment var')
-console.log(process.env.REACT_APP_REDDIT_ID)
+// console.log('printing environment var')
+// console.log(process.env.REACT_APP_REDDIT_ID)
+// const {REDDIT_ID, REDDIT_SECRET, DEMO_REFRESH_TOKEN} = process.env
+// console.log({REDDIT_ID, REDDIT_SECRET, DEMO_REFRESH_TOKEN} )
 
+// let r;
 const r = new snoowrap({
-    userAgent: 'NewReddit/1.0 by Quarrantine',
-    clientId: process.env.REACT_APP_REDDIT_ID,
-    clientSecret: process.env.REACT_APP_REDDIT_SECRET,
-    refreshToken: process.env.REACT_APP_REFRESH_TOKEN
+    userAgent: 'BetterReddit/2.0 by Quarrantine',
+    clientId: process.env.REDDIT_ID,
+    clientSecret: process.env.REDDIT_SECRET,
+    refreshToken: process.env.DEMO_REFRESH_TOKEN 
 });
 
 function postAndGet (req,res,next) {
     // console.debug({reqbody: req.body});
     const {subredditName, options, contentType, contentId} = req.body;
 
-    console.debug(contentType == "comment")
-    
-    
-    // if(contentType == "comment"){
-    //     r.getSubmission(contentId).expandReplies(options)
-    //     .then((data)=> {
-    //         // console.log({comments: c.comments});
-    //         console.log("requesting comments data")
-    //         res.send(data);
-    //     })
-    //     .catch( (e) => {
-    //         console.log(e)
-    //         console.log(`error at comments`)
-    //       })  
-    // } else {
-    //     r.getTop(subredditName, {options})
-    //         .then( (data) => {
-    //             console.log("requesting post data")
-    //             // console.log({data})
-    //             res.send(data);
-    //         }
-    //     )
-    // }
 
     switch(contentType) {
         case "getComment":

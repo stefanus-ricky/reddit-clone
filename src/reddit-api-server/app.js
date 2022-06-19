@@ -18,7 +18,21 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(cors())
+const whitelist = ['http://localhost:3000', 'https://reddit.stefanusrickyriady.xyz:443', 'http://reddit.stefanusrickyriady.xyz:80',]
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  allowedHeaders:['Content-Type', 'Authorization'],
+  credentials: true 
+};
+app.use(cors(corsOptions));
+
+
 // logger
 if (app.get('env') === 'production') {
   app.use(logger('combined'));
