@@ -1,20 +1,19 @@
 const express = require('express');
 const axios = require('axios');
-const Buffer = require('node:buffer');
+// const Buffer = require('node:buffer');
 
 const router = express.Router();
 // import { getItem, putItem } from "../db/dbConfig";
 const  { getItem, putItem }  = require("../db/dbConfig");
 
 async function getAccessTokenFromCode(code) {
-    console.log(code)
-    if(code[code.length-1] === "_" ) {
-        code.splice(1,1,1)
+    // console.log(code)
+    const lastChar = code[code.length-1]
+    const lastChar2 = code[code.length-2]
+    if(lastChar === "_" && lastChar2 === "#") {
+        // redirect will add _# to the code, have to cut last two char
+        code = code.slice(0, code.length-3)
     }
-    //   let bodyParams = {
-    //     user:process.env.REDDIT_ID,
-    //     password: process.env.REDDIT_SECRET
-    //   };
     let bodyParams = new URLSearchParams({
         grant_type:"authorization_code",
         code: code,
@@ -63,22 +62,15 @@ router.get('/', async function(req, res, next) {
     console.log({access_token, err})
 
     if(access_token) {
-        res.send(access_token)
+        res.send({access_token})
     } else {
-        res.send(err);
+        res.status(500).send(err);
     }
   }
 
   
 });
 
-
-/* GET users listing. */
-router.post('/', function(req, res, next) {
-  console.log(`post redir`)
-  console.log(req.query)
-//   res.send('respond with a resource');
-});
 
 
 module.exports = router;
