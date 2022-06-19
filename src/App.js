@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import Page from './component/Page'
 import Consent from './component/Consent'
+import Homepage from './page/Homepage'
 
 // require('dotenv').config();
 
@@ -23,15 +24,16 @@ function App() {
   
 
   return (
-    <div className="main-container container-fluid"  >
+    // <div className="main-container container-fluid"  >
 
       <BrowserRouter>
         {/* <Nav className="container-fluid row header" onSubmitInput={handleSubredditChange}/> */}
         <Routes>
-          <Route path="/" component={Page} exact />
-          <Route path="/permission-url"  component={Consent} exact />
-          <Route path="/r/:contentType/:contentName"  component={Page} />
-          <Route path="/r/:contentName"  component={Page} />
+          <Route path="/" element={<Homepage/>} exact />
+          <Route path="/permission-url"  element={<Consent/>} exact />
+          {/* <Route path="/r/:contentType/:contentName"  element={<Page/>} /> */}
+          <Route path="/r/:pageName/:pageType"  element={<Page/>} />
+          <Route path="/demo/r/:pageName/:pageType"  element={<Page/>} />
 
 
         
@@ -39,7 +41,7 @@ function App() {
      </BrowserRouter>
      
       
-    </div>
+    // </div>
   );
 }
 

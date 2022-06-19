@@ -6,6 +6,7 @@ import {
   Switch,
   Route,
   Link,
+  useSearchParams,
   useParams
 } from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -24,28 +25,50 @@ export default function Page() {
     const [isLoading, setIsLoading]= useState(true);
     const [pageNum, setPageNum]= useState(1);
     const [subredditInfo, setSubredditInfo] = useState();
-    let { pageType, contentName } = useParams();
+    const [timeRange, setTimeRange]= useState("day");
+    
+    // r/pageName/pageType?t=day
+    let { pageName, pageType } = useParams();
+    const [subredditName, setSubredditName]= useState(pageName);
+    
+    const [searchParams, setSearchParams] = useSearchParams();
     // t = day| week| year
     let submissionRequestDuration = 'week';
-    // submissionRequestType = new | hot | top
+    // pageType = new | hot | top
     let submissionRequestType = 'top';
-    if(!contentName) {
-      if (!pageType){
-        pageType = pageType? pageType: "r";
-        contentName = contentName? contentName: "programming";
-      } else {
-        contentName = pageType;
-      }
-    }
-    const [subredditName, setSubredditName]= useState(contentName);
+
+
 
     // setSubredditName(contentName);
-    // console.log({pageType, contentName })
+
+    useEffect (()=>{
+      if(!pageName){
+        pageName = pageName? pageName: "programming";
+      }
+      if(!pageType){
+        pageType = pageType? pageType: "programming";
+      }
+      const t = searchParams.get("t")
+      if(t) setTimeRange(t)
+      console.log({t, pageName, pageType})
+
+
+    }, [])
 
     // fetch data from reddit API. Currently it take "top" submission with "week" range
     useEffect(() => {
       setIsLoading(true);
+      
+      addMoreData()
+
+      /*
+
+      */
+    },[subredditName, pageNum]);
+
+    async function addMoreData () {
       let apiAddress = process.env.REACT_APP_REDDIT_API_ADDRESS || "http://localhost:55050/api";
+      // console.log({apiAddress})
       // let apiAdress = "localhost:" + process.env.EXPRESS_PORT_USED + "/api"
       // console.debug({ apiAdress: apiAddress, a:process.env.REACT_APP_EXPRESS_PORT_USED})
 
@@ -54,7 +77,7 @@ export default function Page() {
         contentType: "getTop",
         subredditName: subredditName,
         options: {
-          t:submissionRequestDuration, 
+          t:timeRange, 
           limit: SUBMISSION_LIMIT
         }
       };
@@ -62,30 +85,26 @@ export default function Page() {
       if(pageNum>1) {
         bodyParams.options.after = "t3_" + lastPostId.current;
       }
-      // const fetchdata = await fetch("localhost", {
-      // console.debug({bodyParams, pageNum, lastPostId})
-      fetch(apiAddress, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(bodyParams)
-      })
-      .then((data) => data.json()
-      .then( (fetchdata) =>{
-        // console.debug({fetchdata})
+      console.log({bodyParams})
+
+      try{
+        const response = await axios({
+          url: apiAddress,
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          data: JSON.stringify(bodyParams)
+        })
+        const fetchdata = response.data
+        console.debug({fetchdata})
         setContent(previousData => previousData.concat(fetchdata))
         setIsLoading(false)
-      }))
-      .catch((e)=>{
-        console.log(e)
-      });
-
-      /*
-
-      */
-    },[subredditName, pageNum]);
+      } catch (e){
+        console.log(e);
+      }
+    }
 
     
     
@@ -124,6 +143,11 @@ export default function Page() {
       // console.log(`load more is triggered`);
       // console.log(`loading more from `, lastPostId)
     }
+    function handleSubmit(e){
+
+      // let params = new URLSearchParams(e.target);
+      // setSearchParams(params);
+    }
 
     return (
       <div className="container-fluid justify-content-center page-container">       
@@ -136,6 +160,9 @@ export default function Page() {
 
         <div className="row px-4 mb-4">
           Subreddit name : {subredditName} 
+        </div>
+        <div className="row px-4 mb-4">
+          Time range: {timeRange}
         </div>
         {/* 
         */}
