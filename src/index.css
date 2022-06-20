@@ -31,6 +31,18 @@ code {
   flex: 0 0;
 }
 
+.hide {
+  visibility: hidden;
+}
+
+.disabled {
+  color:white;
+  background-color: grey;
+  pointer-events: none;
+  cursor: default;
+}
+
+
 /**
 
 

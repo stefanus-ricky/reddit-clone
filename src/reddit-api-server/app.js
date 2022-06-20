@@ -18,7 +18,10 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-const whitelist = ['http://localhost:3000', 'https://reddit.stefanusrickyriady.xyz:443', 'http://reddit.stefanusrickyriady.xyz:80',]
+const whitelist = [
+  'http://localhost:3000', 'http://localhost', 'http://reddit.stefanusrickyriady.xyz',
+  'https://localhost',  'https://reddit.stefanusrickyriady.xyz:443', ]
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -30,8 +33,9 @@ const corsOptions = {
   allowedHeaders:['Content-Type', 'Authorization'],
   credentials: true 
 };
-app.use(cors(corsOptions));
-
+// TODO: cors turned off temporarily due to issue, try to reimplement latter
+// app.use(cors(corsOptions));
+app.use(cors())
 
 // logger
 if (app.get('env') === 'production') {
