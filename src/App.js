@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, {useState, useEffect, useRef, useCallback, lazy, Suspense} from 'react';
 // import axios from 'axios';
-import Nav from './component/Nav';
+// import Nav from './component/Nav';
 import {
   BrowserRouter,
   Routes,
@@ -9,11 +9,11 @@ import {
   Link,
   useParams
 } from "react-router-dom";
-import Page from './component/Page'
-import Consent from './component/Consent'
-import Homepage from './page/Homepage'
+const Nav = React.lazy(() => import('./component/Nav'));
+const Page = lazy(() => import('./component/Page'));
+const Consent = React.lazy(() => import('./component/Consent'));
+const Homepage = React.lazy(() => import('./page/Homepage'));
 
-// require('dotenv').config();
 
 
 
@@ -24,24 +24,24 @@ function App() {
   
 
   return (
-    // <div className="main-container container-fluid"  >
+    <div className="main-container container-fluid"  >
+      <Suspense fallback={<div>Loading...</div>}>
+        <BrowserRouter>
+          {/* <Nav className="container-fluid row header" onSubmitInput={handleSubredditChange}/> */}
+          <Routes>
+            <Route path="/" element={<Homepage/>} exact />
+            <Route path="/permission-url"  element={<Consent/>} exact />
+            <Route path="/r/:pageName/:pageType"  element={<Page/>} />
+            <Route path="/demo/r/:pageName/:pageType"  element={<Page/>} />
 
-      <BrowserRouter>
-        {/* <Nav className="container-fluid row header" onSubmitInput={handleSubredditChange}/> */}
-        <Routes>
-          <Route path="/" element={<Homepage/>} exact />
-          <Route path="/permission-url"  element={<Consent/>} exact />
-          {/* <Route path="/r/:contentType/:contentName"  element={<Page/>} /> */}
-          <Route path="/r/:pageName/:pageType"  element={<Page/>} />
-          <Route path="/demo/r/:pageName/:pageType"  element={<Page/>} />
 
-
-        
-      </Routes>
-     </BrowserRouter>
+          
+        </Routes>
+      </BrowserRouter>
+     </Suspense>
      
       
-    // </div>
+    </div>
   );
 }
 
