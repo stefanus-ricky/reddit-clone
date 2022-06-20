@@ -98,7 +98,7 @@ export default function Page() {
           data: JSON.stringify(bodyParams),
           // withCredentials:true
         })
-        if(response.ok) {
+        if(response.statusText === "OK") {
           const fetchdata = response.data
           console.debug({fetchdata})
           setContent(previousData => previousData.concat(fetchdata))
