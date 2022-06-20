@@ -96,7 +96,7 @@ export default function Page() {
             'Accept': 'application/json'
           },
           data: JSON.stringify(bodyParams),
-          withCredentials:true
+          // withCredentials:true
         })
         if(response.ok) {
           const fetchdata = response.data
@@ -108,6 +108,7 @@ export default function Page() {
         }
       } catch (e){
         console.error(e);
+        console.error(e.response.data);
       }
     }
 

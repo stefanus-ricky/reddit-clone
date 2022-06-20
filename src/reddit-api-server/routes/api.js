@@ -38,9 +38,14 @@ function postAndGet (req,res,next) {
             (async function () {
                 console.debug("requesting getTop data")
                 console.debug({reqbody: req.body});
-                let data = await r.getTop(subredditName, options)
+                try {
+                    let data = await r.getTop(subredditName, options)
+                    res.send(data);
+                } catch (e) {
+                    console.error(e)
+                    res.status(500).send({message: e})
+                }
                 // console.debug({data})
-                res.send(data);
               })();
             
             break;
