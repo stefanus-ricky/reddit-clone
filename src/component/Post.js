@@ -18,7 +18,6 @@ function Media(props) {
  
     const url = props?.src?.hls_url || props.url // || props.url_overridden_by_dest:
 
-    if(is_video !== props.isVideo) console.log({is_video, b: props.isVideo, content: props.content})
     if (is_video || props.isVideo) {    
         // if(!props.content.is_reddit_media_domain) return <a href={props.src.fallback_url}>{props.src.fallback_url}</a>
         return (
@@ -32,8 +31,8 @@ function Media(props) {
     }  
     // TODO: compare iframe vs ReactPlayer youtube. 
     if(domain === "youtube.com") {
-        console.log({propsEmbed:props})
-        console.log({media_embed, media})
+        // console.log({propsEmbed:props})
+        // console.log({media_embed, media})
         // const a = Object.keys(media.oembed).map(key=> {[key]= media.oembed[key]})
         // const Asd = new DOMParser().parseFromString(media_embed, "text/xml");
         // console.log({Asd})

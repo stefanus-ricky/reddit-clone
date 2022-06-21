@@ -14,7 +14,14 @@ const Page = lazy(() => import('./component/Page'));
 const Consent = React.lazy(() => import('./component/Consent'));
 const Homepage = React.lazy(() => import('./page/Homepage'));
 
-
+if(typeof console === "undefined") {
+  // eslint-disable-next-line no-global-assign
+  console = { log: function() { } };
+}
+if(process.env.NODE_ENV === "production") {
+  // eslint-disable-next-line no-global-assign
+  console = { log: function() { } };
+}
 
 
 function App() {

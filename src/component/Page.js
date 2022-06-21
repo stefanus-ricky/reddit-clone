@@ -50,7 +50,7 @@ export default function Page() {
       }
       const t = searchParams.get("t")
       if(t) setTimeRange(t)
-      console.log({t, pageName, pageType})
+      console.debug({t, pageName, pageType})
 
 
     }, [])
@@ -85,7 +85,7 @@ export default function Page() {
       if(pageNum>1) {
         bodyParams.options.after = "t3_" + lastPostId.current;
       }
-      console.log({bodyParams})
+      console.debug({bodyParams})
 
       try{
         const response = await axios({
