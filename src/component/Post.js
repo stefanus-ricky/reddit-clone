@@ -1,41 +1,67 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, {useState, useEffect, useCallback} from 'react'
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import ReactHlsPlayer from 'react-hls-player';
 import timeago from 'epoch-timeago';
-
+import ReactPlayer from 'react-player'
 
 const COMMENT_LIMIT = 1;
 const COMMENT_DEPTH = 1;
 const COMMENT_COUNT = 5;
-
+const REDDIT_BASE_URL = "https://www.reddit.com/"
 
 function Media(props) {
-    const isVideo = props.isVideo;
-    /* 
-    
+    // const {isVideo} = 
+    const {is_video, permalink, thumbnail, domain, media_embed, media} = props.content;
  
-*/
-    if (isVideo) {    
-        if(!props.content.is_reddit_media_domain) return <a href={props.src.fallback_url}>{props.src.fallback_url}</a>
-        return null
-        // return (
-        //     <ReactHlsPlayer
-        //         src= {props.src.hls_url}
-        //         autoPlay={false}
-        //         controls={true}
-        //         width="100%"
-        //         height="auto"
-        //         hlsConfig={{
-        //             maxBufferLength:30,
-        //             maxBufferSize: 15,
-        //             chunkDurationTarget: 12000
-        //           }}
-        //     />
-        // )  
+    const url = props?.src?.hls_url || props.url // || props.url_overridden_by_dest:
+
+    if(is_video !== props.isVideo) console.log({is_video, b: props.isVideo, content: props.content})
+    if (is_video || props.isVideo) {    
+        // if(!props.content.is_reddit_media_domain) return <a href={props.src.fallback_url}>{props.src.fallback_url}</a>
+        return (
+            <ReactPlayer 
+                url={url}
+                controls={true}
+                width="100%"
+                height="auto"
+            />
+        )  
     }  
-    if(!props.content.is_reddit_media_domain) return <a href={props.content.url} target="_blank" rel="noreferrer">{props.content.url}</a>
+    // TODO: compare iframe vs ReactPlayer youtube. 
+    if(domain === "youtube.com") {
+        console.log({propsEmbed:props})
+        console.log({media_embed, media})
+        // const a = Object.keys(media.oembed).map(key=> {[key]= media.oembed[key]})
+        // const Asd = new DOMParser().parseFromString(media_embed, "text/xml");
+        // console.log({Asd})
+        return (
+            <ReactPlayer 
+                url={url}
+                controls={true}
+                width="100%"
+                height="auto"
+            />
+        )  
+        // return (
+        // <div  style={{height: media_embed.height, width:media_embed.width}}>
+        //     {/* <iframe width="356" height="200" 
+        //     src="https://www.youtube.com/embed/oTcuzkiU-XE?feature=oembed&enablejsapi=1" 
+        //     frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        //     allowFullScreen 
+        //     title="【KARAOKE】💙💛 #amesame"></iframe> */}
+        //     <Asd/>
+        // </div>
+        // )
+    }
+    if(props.is_reddit_media_domain) {
+        console.log("reddit domain")
+        console.log({props})
+        return <a href={props.content.url} target="_blank" rel="noreferrer">{props.content.url}</a>
+    } 
+    // console.log({props})
     return <img className="media-img" loop="" muted=""  alt="images" src={props.src}></img>;
 }
 
@@ -149,6 +175,9 @@ export default function Post(props) {
                     isVideo={content.is_video} 
                     src={content.secure_media?content.secure_media.reddit_video: content.url} 
                     id={content.id}/>
+                    <a className='' style ={{textDecoration: 'none'}} href={REDDIT_BASE_URL + content.permalink} >
+                        See this post on Reddit
+                    </a>
                 </div>
                 <div className="row container-fluid">
                     <div className="col d-flex d-sm-none vote-container-small">
