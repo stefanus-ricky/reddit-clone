@@ -4,6 +4,8 @@
     sans-serif;
 
 */
+@import "~react-image-gallery/styles/css/image-gallery.css";
+
 body {
   margin: 0;
   padding: 0;
