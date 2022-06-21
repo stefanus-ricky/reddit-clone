@@ -20,7 +20,7 @@ if(typeof console === "undefined") {
 }
 if(process.env.NODE_ENV === "production") {
   // eslint-disable-next-line no-global-assign
-  console = { log: function() { } };
+  console.log = function() { } ;
 }
 
 

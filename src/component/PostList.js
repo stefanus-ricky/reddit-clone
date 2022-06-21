@@ -11,9 +11,9 @@ export default function PostList({content, infiniteScrollRef}) {
         <div className="mx-2 flex">
             {content.map( (post, index)=>{
                 if(index === content.length-1) {
-                    return  <Post key={post.id} content={post} infiniteScrollRef={infiniteScrollRef} />
+                    return  <Post key={post.id + "_" + index} content={post} infiniteScrollRef={infiniteScrollRef} />
                 }
-                    return <Post key={post.id} content={post}  />
+                    return <Post key={post.id + "_" + index}  content={post}  />
             })}
         </div>
     )
