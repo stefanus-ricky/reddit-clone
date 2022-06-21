@@ -100,7 +100,12 @@ function Media(props) {
         return <div>{props.content.selftext}</div>
     }
     // console.log({props})
-    return <img className="media-img" loop="" muted=""  alt="images" src={props.src}></img>;
+    if(props.content.post_hint === "image"){
+        return <img className="media-img" loop="" muted=""  alt="images" src={props.src}></img>;
+    }
+    return <a className='' style ={{textDecoration: 'none'}} href={props.content.url} >
+    {props.content.url}
+</a>
 }
 
 
