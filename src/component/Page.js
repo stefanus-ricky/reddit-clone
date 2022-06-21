@@ -101,7 +101,7 @@ export default function Page() {
           data: JSON.stringify(bodyParams),
           // withCredentials:true
         })
-        if(response.statusText === "OK") {
+        if(response.statusText === "OK" || response.status >= 200 && response.status < 300) {
           const fetchdata = response.data
           console.debug({fetchdata})
           setContent(previousData => previousData.concat(fetchdata))
