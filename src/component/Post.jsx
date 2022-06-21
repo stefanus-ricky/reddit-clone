@@ -5,7 +5,9 @@ import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import ReactHlsPlayer from 'react-hls-player';
 import timeago from 'epoch-timeago';
+import axios from 'axios';
 import ReactPlayer from 'react-player'
+import ImageGallery from 'react-image-gallery';
 
 const COMMENT_LIMIT = 1;
 const COMMENT_DEPTH = 1;
@@ -14,9 +16,20 @@ const REDDIT_BASE_URL = "https://www.reddit.com/"
 
 function Media(props) {
     // const {isVideo} = 
-    const {is_video, permalink, thumbnail, domain, media_embed, media} = props.content;
+    const {is_video, permalink, thumbnail, domain, media_embed, media, is_gallery, is_self} = props.content;
  
     const url = props?.src?.hls_url || props.url // || props.url_overridden_by_dest:
+
+    async function getGalData(link){
+        const gal_data = await axios({
+            url: link,
+            method: "GET",
+        })
+        console.log(gal_data)
+        return gal_data
+    
+    } 
+
 
     if (is_video || props.isVideo) {    
         // if(!props.content.is_reddit_media_domain) return <a href={props.src.fallback_url}>{props.src.fallback_url}</a>
@@ -55,11 +68,37 @@ function Media(props) {
         // </div>
         // )
     }
-    if(props.is_reddit_media_domain) {
-        console.log("reddit domain")
+    // if(props.content.is_reddit_media_domain) {
+    //     console.log("reddit domain")
+    //     console.log({props})
+    //     return <a href={props.content.url} target="_blank" rel="noreferrer">{props.content.url}</a>
+    // } 
+    if(is_gallery) {
+        console.log("galery")
+        // const gal_data = getGalData("https://www.reddit.com/gallery/vaaep3")
+        const metadata = props.content.media_metadata
+        console.log({metadata})
+
+        let galeryImage= [];
+        for (let index in metadata) {
+            const val = metadata[index]
+            // galeryImage.push(<img className="media-img" loop="" muted=""  alt="images" src={val.s.u}></img>)
+            galeryImage.push({original:val.s.u})
+        }
+        console.log({galeryImage})
+
         console.log({props})
-        return <a href={props.content.url} target="_blank" rel="noreferrer">{props.content.url}</a>
+        return <>
+        {/* {gal_data? gal_data : null} */}
+        {/* {galeryImage.map((val, index)=><img key={index} className="media-img" loop="" muted=""  alt="images" src={val}></img>)} */}
+        <ImageGallery items={galeryImage} />
+
+        </>
     } 
+    if(is_self){
+
+        return <div>{props.content.selftext}</div>
+    }
     // console.log({props})
     return <img className="media-img" loop="" muted=""  alt="images" src={props.src}></img>;
 }

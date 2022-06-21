@@ -25,7 +25,7 @@ export default function Page() {
     const [isLoading, setIsLoading]= useState(true);
     const [pageNum, setPageNum]= useState(1);
     const [subredditInfo, setSubredditInfo] = useState();
-    const [timeRange, setTimeRange]= useState("day");
+    const [timeRange, setTimeRange]= useState("");
     
     // r/pageName/pageType?t=day
     let { pageName, pageType } = useParams();
@@ -49,22 +49,25 @@ export default function Page() {
         pageType = pageType? pageType: "programming";
       }
       const t = searchParams.get("t")
-      if(t) setTimeRange(t)
+      console.log({t})
+      if(t){
+        setTimeRange(t)
+      } else {
+        setTimeRange("day")
+      }
       console.debug({t, pageName, pageType})
-
+      
 
     }, [])
 
     // fetch data from reddit API. Currently it take "top" submission with "week" range
     useEffect(() => {
+      if(!timeRange) {
+        return
+      }
       setIsLoading(true);
-      
-      addMoreData()
-
-      /*
-
-      */
-    },[subredditName, pageNum]);
+      addMoreData();
+    },[subredditName, pageNum, timeRange]);
 
     async function addMoreData () {
       let apiAddress = process.env.REACT_APP_REDDIT_API_ADDRESS || "http://localhost:55050/api";
