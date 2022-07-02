@@ -163,15 +163,15 @@ export default function Page() {
           Subreddit name : {subredditName} 
         </div>
         <div className="row px-4 mb-4">
-          Content type : {subredditName} 
+          Sort type : {pageType} 
           <div>
-            <button type="button" className='flex btn-sm btn-primary m-1 ' onClick={()=>handlePageTypeChange("hot")}
-              >
-                Hot
-            </button>
             <button type="button" className='flex btn-sm btn-primary m-1 ' onClick={()=>handlePageTypeChange("new")}
               >
                 New
+            </button>
+            <button type="button" className='flex btn-sm btn-primary m-1 ' onClick={()=>handlePageTypeChange("hot")}
+              >
+                Hot
             </button>
             <button type="button" className='flex btn-sm btn-primary m-1 ' onClick={()=>handlePageTypeChange("top")}
               >
