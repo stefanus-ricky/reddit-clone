@@ -2,12 +2,9 @@
 import React, {useState, useEffect, useRef, useCallback, useContext} from 'react';
 import PostList from './PostList';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
   useSearchParams,
-  useParams
+  useParams,
+  useNavigate
 } from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
@@ -21,55 +18,76 @@ const LOAD_MORE_COUNT = parseInt(process.env.REACT_APP_LOAD_MORE_COUNT) || 10;
 
 
 export default function Page() {
+    const [searchParams, setSearchParams] = useSearchParams();
+    let navigate = useNavigate();
+
+
     const [content, setContent]= useState([]);
     const [isLoading, setIsLoading]= useState(true);
     const [pageNum, setPageNum]= useState(1);
     const [subredditInfo, setSubredditInfo] = useState();
-    const [timeRange, setTimeRange]= useState("");
+    // t = day| week| year
+    const [timeRange, setTimeRange]= useState(searchParams.get("t") || "week");
+    const [requestOptions, setRequestOptions]= useState({});
     
     // r/pageName/pageType?t=day
-    let { pageName, pageType } = useParams();
-    const [subredditName, setSubredditName]= useState(pageName);
-    
-    const [searchParams, setSearchParams] = useSearchParams();
-    // t = day| week| year
-    let submissionRequestDuration = 'week';
     // pageType = new | hot | top
-    let submissionRequestType = 'top';
+    const { pageName, pageType } = useParams();
+    const [subredditName, setSubredditName]= useState(pageName);
 
-
-
+    const [errorMessage, setErrorMessage]= useState("");
+    
     // setSubredditName(contentName);
 
-    useEffect (()=>{
-      if(!pageName){
-        pageName = pageName? pageName: "programming";
-      }
-      if(!pageType){
-        pageType = pageType? pageType: "programming";
-      }
-      const t = searchParams.get("t")
-      console.log({t})
-      if(t){
-        setTimeRange(t)
-      } else {
-        setTimeRange("day")
-      }
-      console.debug({t, pageName, pageType})
-      
-
-    }, [])
-
-    // fetch data from reddit API. Currently it take "top" submission with "week" range
+    
+    // fetch more data from same page
     useEffect(() => {
-      if(!timeRange) {
-        return
-      }
       setIsLoading(true);
       addMoreData();
-    },[subredditName, pageNum, timeRange]);
+    },[pageNum]);
+
+    // delete current data everytime different page loaded
+    useEffect(() => {
+      setIsLoading(true);
+      resetPage();
+
+      addMoreData();
+    },[subredditName, timeRange, pageType]);
+    
+    // allow navigate to other subreddit via search bar
+    function handleSubredditChange (subName)  {
+      navigate(`/demo/r/${subName}/${pageType}?t=${timeRange}`)
+      resetPage();
+    }
+    function handlePageTypeChange(type)  {
+      navigate(`/demo/r/${subredditName}/${type}?t=${timeRange}`)
+      resetPage();
+    }
+
+    // infinite scroll observer
+    const scrollObserver = useRef();
+    let lastPostId= useRef();
+
+    const infiniteScrollRef = useCallback((component)=>{
+      if(isLoading) return;
+      
+      if (scrollObserver.current) {
+        scrollObserver.current.disconnect()
+      }
+      scrollObserver.current = new IntersectionObserver( lastPost => {
+        if(lastPost[0].isIntersecting){
+          loadMore(lastPostId)
+          setPageNum( pageNum+1)
+        }
+      })
+      if (component) {
+        scrollObserver.current.observe(component);
+        lastPostId.current = component.id
+      }  
+    }, [isLoading])
 
     async function addMoreData () {
+      setIsLoading(true);
       let apiAddress = process.env.REACT_APP_REDDIT_API_ADDRESS || "http://localhost:55050/api";
       // console.log({apiAddress})
       // let apiAdress = "localhost:" + process.env.EXPRESS_PORT_USED + "/api"
@@ -108,45 +126,19 @@ export default function Page() {
           setIsLoading(false)
         } else {
           console.error(response)
+          setIsLoading(false)
         }
       } catch (e){
         console.error(e);
         console.error(e.response.data);
+        setIsLoading(false)
       }
     }
 
-    
-    
-    // allow navigate to other subreddit via search bar
-    function handleSubredditChange (subName)  {
-      setSubredditName(subName);
+    function resetPage() {
       setContent([]);
       setPageNum(1);
     }
-
-    // infinite scroll observer
-    const scrollObserver = useRef();
-    let lastPostId= useRef();
-
-    const infiniteScrollRef = useCallback((component)=>{
-      if(isLoading) return;
-      // console.log("page ref")
-      // console.log({component, isLoading, id:component?.id})
-      if (scrollObserver.current) {
-        scrollObserver.current.disconnect()
-      }
-      scrollObserver.current = new IntersectionObserver( lastPost => {
-        if(lastPost[0].isIntersecting){
-          loadMore(lastPostId)
-          setPageNum( pageNum+1)
-        }
-      })
-      if (component) {
-        scrollObserver.current.observe(component);
-        lastPostId.current = component.id
-        // console.log({componentid:component?.id})
-      }  
-    }, [isLoading])
 
     function loadMore(lastPostId) {
       // console.log(`load more is triggered`);
@@ -171,8 +163,53 @@ export default function Page() {
           Subreddit name : {subredditName} 
         </div>
         <div className="row px-4 mb-4">
-          Time range: {timeRange}
+          Content type : {subredditName} 
+          <div>
+            <button type="button" className='flex btn-sm btn-primary m-1 ' onClick={()=>handlePageTypeChange("hot")}
+              >
+                Hot
+            </button>
+            <button type="button" className='flex btn-sm btn-primary m-1 ' onClick={()=>handlePageTypeChange("new")}
+              >
+                New
+            </button>
+            <button type="button" className='flex btn-sm btn-primary m-1 ' onClick={()=>handlePageTypeChange("top")}
+              >
+                Top
+            </button>
+            <button type="button" className='flex btn-sm btn-primary m-1 ' onClick={()=>handlePageTypeChange("controversial")}
+              >
+                Controversial
+            </button>
+          </div>
         </div>
+        <div className="row px-4 mb-4">
+          Time range: {timeRange} 
+          <div>
+            <button type="button" className='flex btn-sm btn-primary m-1 ' onClick={()=>setTimeRange("day")}
+              >
+                Day
+            </button>
+            <button type="button" className='flex btn-sm btn-primary m-1' onClick={()=>setTimeRange("week")}
+              >
+                Week
+            </button>
+            <button type="button" className='flex btn-sm btn-primary m-1' onClick={()=>setTimeRange("month")}
+              >
+                Month
+            </button>
+            <button type="button" className='flex btn-sm btn-primary m-1' onClick={()=>setTimeRange("year")}
+              >
+                Year
+            </button>
+            <button type="button" className='flex btn-sm btn-primary m-1' onClick={()=>setTimeRange("all")}
+              >
+                All time
+            </button>
+          </div>
+          
+        </div>
+        {errorMessage? "Error:" + errorMessage : null}
         {/* 
         */}
         <div className="col-md-10 col-xl-10 col-xxl-9 post-list-container px-4">

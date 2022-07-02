@@ -15,21 +15,9 @@ const COMMENT_COUNT = 5;
 const REDDIT_BASE_URL = "https://www.reddit.com/"
 
 function Media(props) {
-    // const {isVideo} = 
     const {is_video, permalink, thumbnail, domain, media_embed, media, is_gallery, is_self} = props.content;
  
     const url = props?.src?.hls_url || props.url // || props.url_overridden_by_dest:
-
-    async function getGalData(link){
-        const gal_data = await axios({
-            url: link,
-            method: "GET",
-        })
-        console.log(gal_data)
-        return gal_data
-    
-    } 
-
 
     if (is_video || props.isVideo) {    
         // if(!props.content.is_reddit_media_domain) return <a href={props.src.fallback_url}>{props.src.fallback_url}</a>
@@ -39,22 +27,44 @@ function Media(props) {
                 controls={true}
                 width="100%"
                 height="auto"
+                config={{
+                    youtube: {
+                      playerVars: { showinfo: 1 }
+                    },
+                    file:{
+                        hlsOptions:{
+                            // autoStartLoad:false,
+                        }
+                    }
+                    // facebook: {
+                    //   appId: '12345'
+                    // }
+                  }}
             />
         )  
     }  
     // TODO: compare iframe vs ReactPlayer youtube. 
     if(domain === "youtube.com") {
-        // console.log({propsEmbed:props})
-        // console.log({media_embed, media})
-        // const a = Object.keys(media.oembed).map(key=> {[key]= media.oembed[key]})
-        // const Asd = new DOMParser().parseFromString(media_embed, "text/xml");
-        // console.log({Asd})
+        
         return (
             <ReactPlayer 
                 url={url}
                 controls={true}
                 width="100%"
                 height="auto"
+                config={{
+                    youtube: {
+                      playerVars: { showinfo: 1 }
+                    },
+                    file:{
+                        hlsOptions:{
+                            // autoStartLoad:false,
+                        }
+                    }
+                    // facebook: {
+                    //   appId: '12345'
+                    // }
+                  }}
             />
         )  
         // return (
@@ -74,25 +84,14 @@ function Media(props) {
     //     return <a href={props.content.url} target="_blank" rel="noreferrer">{props.content.url}</a>
     // } 
     if(is_gallery) {
-        console.log("galery")
-        // const gal_data = getGalData("https://www.reddit.com/gallery/vaaep3")
         const metadata = props.content.media_metadata
-        console.log({metadata})
-
         let galeryImage= [];
         for (let index in metadata) {
             const val = metadata[index]
-            // galeryImage.push(<img className="media-img" loop="" muted=""  alt="images" src={val.s.u}></img>)
             galeryImage.push({original:val.s.u})
         }
-        console.log({galeryImage})
-
-        console.log({props})
         return <>
-        {/* {gal_data? gal_data : null} */}
-        {/* {galeryImage.map((val, index)=><img key={index} className="media-img" loop="" muted=""  alt="images" src={val}></img>)} */}
         <ImageGallery items={galeryImage} />
-
         </>
     } 
     if(is_self){
@@ -128,8 +127,6 @@ export default function Post(props) {
     const [commentList, setCommentList] = useState([]);
     // fetch comment
     useEffect(() => {
-        // console.log("fetch comment")
-        // console.log(content.id)
       let apiAddress = process.env.REACT_APP_REDDIT_API_ADDRESS || "http://localhost:55050/api";
       let bodyParams = {
         contentType: "getComment",
@@ -153,20 +150,6 @@ export default function Post(props) {
         setCommentList(fetchdata);
       }));
 
-
-      /* deprecated snoowrap
-      r.getSubmission(content.id).expandReplies({limit:COMMENT_LIMIT, depth: COMMENT_DEPTH})
-      .then((c)=> {
-          // console.log({comments: c.comments});
-          setCommentList(c);
-      })
-      .catch( (e) => {
-          console.log(e)
-          console.log(`error at comments`)
-        })  
-
-
-      */
     }, [])
   
     return (
