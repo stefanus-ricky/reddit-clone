@@ -59,6 +59,7 @@ code {
   height:60px;
   flex: 0 0 auto;
   background-color: white;
+  /* position: fixed; */
 }
 .nav-link1{
   max-height: 100%;
@@ -94,8 +95,9 @@ code {
   max-height: 100%;
   height: 100%;
   max-width: 600px;
-  width: auto;
-  flex-grow: 1;
+  /* width: auto; */
+  flex: 1 1 30%;
+  /* flex-grow: 1; */
   padding: 5px;
   position: relative;
 }
