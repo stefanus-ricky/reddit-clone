@@ -3,12 +3,6 @@ var express = require('express');
 var router = express.Router();
 require('dotenv').config();
 
-// console.log('printing environment var')
-// console.log(process.env.REACT_APP_REDDIT_ID)
-// const {REDDIT_ID, REDDIT_SECRET, DEMO_REFRESH_TOKEN} = process.env
-// console.log({REDDIT_ID, REDDIT_SECRET, DEMO_REFRESH_TOKEN} )
-
-// let r;
 const r = new snoowrap({
     userAgent: 'BetterReddit/2.0 by Quarrantine',
     clientId: process.env.REDDIT_ID,
@@ -17,8 +11,37 @@ const r = new snoowrap({
 });
 
 function postAndGet (req,res,next) {
-    // console.debug({reqbody: req.body});
-    const {subredditName, options, contentType, contentId} = req.body;
+    console.debug({reqbody: req.body});
+    const {subredditName, sort, options, contentType, contentId} = req.body;
+
+    const pageFunctionList = {
+        hot: r.getHot,
+        top: r.getTop,
+        new : r.getNew,
+        controversial: r.getControversial
+    }
+    async function getPage (subredditName, sort, options) {
+        const pageFunction = pageFunctionList[sort]
+        try {
+            let data = await pageFunction(subredditName, options)
+            res.send(data);
+        } catch (e) {
+            console.error(e)
+            res.status(500).send({message: e})
+        }
+    }
+
+    async function getTop (subredditName, options) {
+        try {
+            let data = await r.getTop(subredditName, options)
+            res.send(data);
+        } catch (e) {
+            console.error(e)
+            res.status(500).send({message: e})
+        }
+    }
+
+
 
 
     switch(contentType) {
@@ -35,19 +58,10 @@ function postAndGet (req,res,next) {
               })  
             break;
         case "getTop":
-            (async function () {
-                console.debug("requesting getTop data")
-                console.debug({reqbody: req.body});
-                try {
-                    let data = await r.getTop(subredditName, options)
-                    res.send(data);
-                } catch (e) {
-                    console.error(e)
-                    res.status(500).send({message: e})
-                }
-                // console.debug({data})
-              })();
-            
+            getTop(subredditName, options)
+            break;
+        case "getPage":
+            getPage(subredditName, sort, options)
             break;
         case "getSubredditInfo":
             (async function () {

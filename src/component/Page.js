@@ -95,8 +95,9 @@ export default function Page() {
 
       let bodyParams = {
         token:"empty",
-        contentType: "getTop",
+        contentType: "getPage",
         subredditName: subredditName,
+        sort:pageType,
         options: {
           t:timeRange, 
           limit: SUBMISSION_LIMIT
