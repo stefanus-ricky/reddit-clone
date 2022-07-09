@@ -21,9 +21,37 @@ function postAndGet (req,res,next) {
         controversial: r.getControversial
     }
     async function getPage (subredditName, sort, options) {
+
         const pageFunction = pageFunctionList[sort]
+        const pageOption = {
+            limit: options.limit,
+            time:sort,
+
+        }
+        // limit?: number;
+        // after?: string;
+        // before?: string;
+        // show?: string;
+        // count?: number;
+
         try {
-            let data = await pageFunction(subredditName, options)
+            console.log({subredditName, sort, pageOption})
+            let data
+            switch(sort) {
+                case "hot":
+                    data = await r.getHot(subredditName, options)
+                    break;
+                case "top":
+                    data = await  r.getTop(subredditName, options)
+                    break;
+                case "new":
+                    data = await  r.getNew(subredditName, options)
+                    break;
+                case "controversial":
+                    data = await  r.getControversial(subredditName, options)
+                    break;
+            }
+            // let data = await r.getHot(subredditName, pageOption)
             res.send(data);
         } catch (e) {
             console.error(e)
@@ -32,6 +60,7 @@ function postAndGet (req,res,next) {
     }
 
     async function getTop (subredditName, options) {
+        // console.log({subredditName, options})
         try {
             let data = await r.getTop(subredditName, options)
             res.send(data);
